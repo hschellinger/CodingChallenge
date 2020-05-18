@@ -49,6 +49,19 @@ function runTests() {
         return expected === actual;
     }());
 
+    console.log(`setting "count" has no effect:`, function() {
+        const expected = state.count;
+
+        try {
+            state.count++;
+        }
+        catch {}
+
+        const actual = state.count;
+
+        return expected === actual;
+    }());
+
     console.log(`"count" may only be manipulated by "inc()":`, function () {
         // additional constraint
         return false;
