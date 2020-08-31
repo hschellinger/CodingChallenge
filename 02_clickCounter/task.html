@@ -1,0 +1,17 @@
+<script src="task.js"></script>
+<script>
+    function inc() {
+        state.inc();
+        document.querySelector("#count").innerHTML = state.count;
+    }
+</script>
+
+<div style="display: flex; justify-content: center; height: 100%; align-items: center;">
+    <div style="text-align: center;">
+        <div id="count">0</div>
+        <button onclick="inc()" id="increment-button">+</button>
+    </div>
+</div>
+
+
+

@@ -20,12 +20,17 @@
 
 
 
-const state = ;  // TODO
+const state = {
+    count : 0,
+    inc() {
+        this.count++;
+    },
+};  // TODO
 
 
 
 
-runTests();
+// runTests();
 
 function runTests() {
     console.log(`state has "count" property:`,
