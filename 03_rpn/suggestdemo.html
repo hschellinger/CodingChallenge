@@ -1,0 +1,159 @@
+<link rel="stylesheet" href="styles.css">
+
+<div class="such-feld">
+    <input id="suchfeld">
+    <button onclick="suchen()">suchen</button>
+</div>
+
+<div class="results-grid" id="results">
+</div>
+
+<div class="suggested-results-grid-show" id="suggestedResults" >
+    <div class="brands grid-element" id="brands">Brands</div>
+    <div class="categories grid-element" id="categories">Categories</div>
+    <div class="products grid-element" id="products">Products</div>
+</div>
+
+<script src="suchdemo.js"></script>
+<script>
+    let input = document.getElementById('suchfeld');
+
+    input.addEventListener('keyup',function(event) {
+        if (input.value.length > 2) {
+            suggest();
+        }  else if (event.keyCode === 13) {
+            suchen();
+        }
+
+    })
+         
+    function createResultElements() {
+        produkte.searchResult.records.forEach(result => {
+            const preis = result.record.Price;
+            const name = result.record.Title;
+            const bild = result.record.ImageName;
+
+            const resultElement = document.createElement('div');
+            resultElement.style.margin = '10px 10px 10px 0px';
+            resultElement.style.padding = '5px';
+            resultElement.style.border = 'solid black 1px';
+
+            const preisElement = document.createElement('div');
+            preisElement.innerHTML = preis + ' €';
+
+            const nameElement = document.createElement('div');
+            nameElement.style.fontWeight = 'bold';
+            nameElement.style.fontSize = 'large';
+            nameElement.innerHTML = name;
+
+            const bildElement = document.createElement('img');
+            bildElement.src = bild;
+
+            document.getElementById('results').appendChild(resultElement);
+            resultElement.appendChild(bildElement);
+            resultElement.appendChild(nameElement);
+            resultElement.appendChild(preisElement);            
+        });
+    } 
+
+    function createSuggestedElements() {
+        
+        const suggestedResultsDiv = document.getElementById('suggestedResults');
+
+      /*   if (suggestedResultsDiv.classList.contains('suggested-results-grid-show')) {
+            suggestedResultsDiv.classList.remove('suggested-results-grid-show')
+            suggestedResultsDiv.classList.add('suggested-results-grid-hide')
+        }   */
+
+        let brands = [];
+        let categories = [];
+        let products = [];
+
+        suggestions.suggestions.forEach(suggestion => {
+            if (suggestion.type === 'brand') {
+                if (brands.length <= 4) {
+                    brands.push(suggestion);
+                }
+                
+            } else if (suggestion.type === 'category'){
+                if (categories.length <= 4) {
+                    categories.push(suggestion);
+                }
+                
+            } else if (suggestion.type === 'productName') {
+                if (products.length <= 6) {
+                    products.push(suggestion);
+                }
+                
+            }
+        })
+
+        brands.forEach(brand => {
+            const brandElement = document.createElement('div');
+            brandElement.innerHTML = brand.name;
+            document.getElementById('brands').appendChild(brandElement);
+        })
+
+        categories.forEach(category => {
+            const categoryElement = document.createElement('div');
+            categoryElement.innerHTML = category.name;
+            document.getElementById('categories').appendChild(categoryElement);
+        })
+
+        products.forEach(product => {
+            const productElement = document.createElement('div');
+            productElement.innerHTML = product.name;
+            const bildElement = document.createElement('img');
+            bildElement.src = product.image;
+            document.getElementById('products').appendChild(productElement);
+            productElement.appendChild(bildElement);
+            bildElement.classList.add('product');
+        })
+        
+        suggestedResultsDiv.classList.replace('suggested-results-grid-hide','suggested-results-grid-show');
+      
+    }
+
+    function suggest() {
+        const suggestedResultsDiv = document.getElementById('suggestedResults');
+        suggestedResultsDiv.querySelectorAll('.grid-element').forEach(node => node.innerHTML = '');
+
+        const query = document.getElementById('suchfeld').value;
+
+       fetch(suggestAPI + query, {
+        method: 'GET',
+        headers: {
+            "authorization": "tmp.bewerber.hannes:976d2a9fb300f57ded436aedf6845ed3"
+        }
+        })
+        .then(response => response.json())
+        .then(data => {
+            suggestions = {...data};
+            console.log(suggestions);
+            createSuggestedElements();
+        });
+    }
+
+    function suchen() {
+
+        const resultsDiv = document.getElementById("results");
+        resultsDiv.querySelectorAll('*').forEach(node => node.remove());
+
+        const query = document.getElementById('suchfeld').value;
+
+        fetch(suche + query, {
+        method: 'GET',
+        headers: {
+            "authorization": "tmp.bewerber.hannes:976d2a9fb300f57ded436aedf6845ed3"
+        }
+        })
+        .then(response => response.json())
+        .then(data => {
+            produkte = {...data};
+            createResultElements();
+        });
+    }
+
+</script>
+
+

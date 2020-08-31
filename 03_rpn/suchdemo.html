@@ -1,0 +1,70 @@
+<div style="display: flex; justify-content: center;">
+    <input id="suchfeld">
+    <button onclick="suchen()">suchen</button>
+</div>
+<div style="
+    display: grid;grid-template-columns: 1fr 1fr 1fr;" id="results"></div>
+
+<script src="suchdemo.js"></script>
+<script>
+    let input = document.getElementById('suchfeld');
+
+    input.addEventListener('keyup',function(event) {
+        if (event.keyCode === 13) {
+            suchen();
+        }
+    })
+         
+    function createResultElements() {
+        produkte.searchResult.records.forEach(result => {
+            const preis = result.record.Price;
+            const name = result.record.Title;
+            const bild = result.record.ImageName;
+
+            const resultElement = document.createElement('div');
+            resultElement.style.margin = '10px 10px 10px 0px';
+            resultElement.style.padding = '5px';
+            resultElement.style.border = 'solid black 1px';
+            resultElement.style.borderRadius = '8px;'
+
+            const preisElement = document.createElement('div');
+            preisElement.innerHTML = preis + ' €';
+
+            const nameElement = document.createElement('div');
+            nameElement.style.fontWeight = 'bold';
+            nameElement.style.fontSize = 'large';
+            nameElement.innerHTML = name;
+
+            const bildElement = document.createElement('img');
+            bildElement.src = bild;
+
+            document.getElementById('results').appendChild(resultElement);
+            resultElement.appendChild(bildElement);
+            resultElement.appendChild(nameElement);
+            resultElement.appendChild(preisElement);            
+        });
+    } 
+
+    function suchen() {
+
+        const resultsDiv = document.getElementById("results");
+        resultsDiv.querySelectorAll('*').forEach(node => node.remove());
+
+        const query = document.getElementById('suchfeld').value;
+
+       fetch(suche + query, {
+        method: 'GET',
+        headers: {
+            "authorization": "tmp.bewerber.hannes:976d2a9fb300f57ded436aedf6845ed3"
+        }
+        })
+        .then(response => response.json())
+        .then(data => {
+            produkte = {...data};
+            createResultElements();
+        });
+    }
+
+</script>
+
+
