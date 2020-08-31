@@ -22,11 +22,38 @@ const testCases = createTestCases();
 
 
 
-function fac() {
-    // TODO
+function fac(number) {
+    if (number === 0 || number === 1) {
+      return 1;
+    }
+
+    for (let i = number - 1; i >= 1; i--) {
+      
+      number = number * i;
+    }
+
+    return number;
 }
 
+function testFac() {
 
+  const testCases = createTestCases();
+
+  
+  for (let i = 0; i < testCases.length; i++) {
+    
+    let factorial = fac(testCases[i][0]);
+
+    if (factorial === testCases[i][1]) {
+      console.log(factorial, testCases[i], true);
+    } else {
+      console.log(factorial, testCases[i], false);
+    }
+  }
+
+}
+
+console.log(testFac());
 
 function createTestCases() {
     return [
@@ -203,3 +230,4 @@ function createTestCases() {
         [170, 7.257415615307994e+306],
     ];
 }
+
